@@ -20,6 +20,7 @@ class UserType extends AbstractType
                     'choices' => ['ROLE_ADMIN' => 'ROLE_ADMIN', 'ROLE_USER' => 'ROLE_USER'],
                     'expanded' => true,
                     'multiple' => true,
+                    'required' => true,
                 ]
             )
             ->add('username', TextType::class, ['label' => "Nom d'utilisateur"])
