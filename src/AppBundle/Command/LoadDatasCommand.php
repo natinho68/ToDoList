@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-class LoadDatas extends ContainerAwareCommand
+class LoadDatasCommand extends ContainerAwareCommand
 {
     protected function configure()
     {

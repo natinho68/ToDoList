@@ -1,17 +1,17 @@
 Tasks:
-    fokfe:
+    task1:
         title: Faire le CSS
         content: "sur la partie event"
         done: false
         author: 1
 
-    fezof:
+    task2:
         title: Corriger bug JS
         content: "erreur en console file not found"
         done: false
         author: 1
 
-    ogregrj:
+    task3:
         title: Retourner erreur sur les formulaire en AJAX
         content: "actuellement en PHP pur"
         done: false

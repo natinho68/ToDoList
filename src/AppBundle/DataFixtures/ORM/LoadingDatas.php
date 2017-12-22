@@ -6,16 +6,20 @@ use Symfony\Component\Yaml\Yaml;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 
 class LoadingDatas {
 
     private $em;
+    private $container;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
     {
         $this->em = $em;
+        $this->container = $container;
     }
 
     public function getDatas($file)
@@ -33,9 +37,12 @@ class LoadingDatas {
         {
             $user = new User();
             $user->setUsername($columns['username']);
-            $user->setPassword($columns['password']);
+            $encoder = $this->container->get('security.password_encoder');
+            $password = $encoder->encodePassword($user, $columns['password']);
+            $user->setPassword($password);
             $user->setEmail($columns['email']);
             $user->setRoles($columns['role']);
+            $this->em->persist($user);
         }
         $this->em->flush();
     }
