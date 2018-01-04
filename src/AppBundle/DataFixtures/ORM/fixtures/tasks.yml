@@ -16,3 +16,21 @@ Tasks:
         content: "actuellement en PHP pur"
         done: false
         author: 1
+
+    task4:
+        title: Changer les H1
+        content: "mettre la police Opensans bold pour les titres h1"
+        done: false
+        author: 3
+
+    task5:
+        title: Ajouter sidebar
+        content: "sur les pages event"
+        done: false
+        author: 3
+
+    task6:
+        title: Pagination à revoir
+        content: "les pages commence à 0"
+        done: false
+        author: 3
