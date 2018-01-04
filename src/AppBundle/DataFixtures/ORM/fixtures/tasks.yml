@@ -1,0 +1,36 @@
+Tasks:
+    task1:
+        title: Faire le CSS
+        content: "sur la partie event"
+        done: false
+        author: 1
+
+    task2:
+        title: Corriger bug JS
+        content: "erreur en console file not found"
+        done: false
+        author: 1
+
+    task3:
+        title: Retourner erreur sur les formulaire en AJAX
+        content: "actuellement en PHP pur"
+        done: false
+        author: 1
+
+    task4:
+        title: Changer les H1
+        content: "mettre la police Opensans bold pour les titres h1"
+        done: false
+        author: 3
+
+    task5:
+        title: Ajouter sidebar
+        content: "sur les pages event"
+        done: false
+        author: 3
+
+    task6:
+        title: Pagination à revoir
+        content: "les pages commence à 0"
+        done: false
+        author: 3

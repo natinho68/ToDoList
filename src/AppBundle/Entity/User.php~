@@ -40,8 +40,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="array")
-     * @Assert\NotBlank(message="Vous devez choisir un rôle")
+     * @ORM\Column(type="string", length=255)
      */
     private $roles;
 
@@ -87,25 +86,11 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return $this->roles;
+        return array('ROLE_USER');
     }
 
     public function eraseCredentials()
     {
 
-    }
-
-    /**
-     * Set roles
-     *
-     * @param string $roles
-     *
-     * @return User
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 }

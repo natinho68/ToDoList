@@ -25,12 +25,14 @@ class TaskController extends Controller
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
+        $user = $this->getUser();
+
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
+            $task->setAuthor($user);
             $em->persist($task);
             $em->flush();
 
@@ -73,6 +75,7 @@ class TaskController extends Controller
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
+
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
         return $this->redirectToRoute('task_list');
@@ -83,12 +86,21 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+        if ($task->getAuthor() != $this->getUser() && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+        {
 
-        return $this->redirectToRoute('task_list');
+            $this->addFlash('error', sprintf("Vous ne pouvez pas supprimer la tâche '%s' car vous n'en êtes pas l'auteur", $task->getTitle()));
+            return $this->redirectToRoute('task_list');
+
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
+
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+            return $this->redirectToRoute('task_list');
+        }
     }
 }
