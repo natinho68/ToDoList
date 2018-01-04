@@ -14,3 +14,10 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+
+## add this to simulate authentication for tests
+security:
+    firewalls:
+        main:
+            http_basic: ~
