@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndexAction()
+    public function test_indexAction()
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/',  array(), array(), array(

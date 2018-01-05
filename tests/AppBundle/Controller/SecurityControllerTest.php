@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class SecurityControllerTest extends TestCase
 {
-    public function testLoginAction()
+    public function test_loginAction()
     {
 
     }
