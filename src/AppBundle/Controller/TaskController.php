@@ -7,6 +7,7 @@ use AppBundle\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class TaskController extends Controller
 {
@@ -24,13 +25,14 @@ class TaskController extends Controller
     public function createAction(Request $request)
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
         $user = $this->getUser();
+        $form = $this->createForm(TaskType::class, $task);
+
 
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $task->setAuthor($user);
             $em->persist($task);
@@ -53,7 +55,7 @@ class TaskController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
