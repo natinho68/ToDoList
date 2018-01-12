@@ -43,7 +43,7 @@ class Task
     /**
     *
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", cascade={"persist"})
-    * @ORM\JoinColumn(nullable=true)
+    * @ORM\JoinColumn(nullable=false)
     */
     private $author;
 

@@ -78,59 +78,63 @@ class TaskControllerTest extends WebTestCase
 
     public function test_AddTask()
     {
+        $createATaskUser = new User();
+        $createATaskUser->setUsername('createATaskUser');
+        $createATaskUser->setPassword('createATaskUser');
+        $createATaskUser->setRoles(array('ROLES_USER'));
+        $createATaskUser->setEmail('createATaskUser@test.com');
+
+        $createdTask = new Task();
+
+        $this->em->flush();
 
         $this->logIn();
         $crawler = $this->client->request('GET', '/tasks/create');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $this->security->getToken()->getUser();
-
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['task[title]'] = 'taskTest';
-        $form['task[content]'] = 'contentTaskTest';
+        $form['task[title]'] = 'createATask';
+        $form['task[content]'] = 'createATaskContent';
 
+        var_dump($this->security);
+        die();
         $this->client->submit($form);
-
-        $crawler = $this->client->followRedirect();
-
-
-        //echo $this->client->getResponse()->getContent();
 
 
     }
 
-    /*public function test_EditUser()
+    public function test_toggleTaskAction()
     {
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/tasks');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->selectLink('Créer un utilisateur')->count());
 
-        $editUser = new User();
-        $editUser->setUsername('editUser');
-        $editUser->setPassword('editUser');
-        $editUser->setRoles(array('ROLES_USER'));
-        $editUser->setEmail('editUser@test.com');
+        $testTaskUser = new User();
+        $testTaskUser->setUsername('testTaskUser');
+        $testTaskUser->setPassword('testTaskUser');
+        $testTaskUser->setRoles(array('ROLES_USER'));
+        $testTaskUser->setEmail('testTaskUser@test.com');
 
-        $this->em->persist($editUser);
+        $this->em->persist($testTaskUser);
         $this->em->flush();
 
-        $this->logIn();
-        $crawler = $this->client->request('GET', 'users/1/edit');
+        $taskTest = new Task();
+        $taskTest->setTitle('TaskTest');
+        $taskTest->setContent('Create a task test');
+        $taskTest->setAuthor($testTaskUser);
 
-        $form = $crawler->selectButton('Modifier')->form();
+        $this->em->persist($taskTest);
+        $this->em->flush();
 
-
-        $form['user[roles]'] = 'ROLE_USER';
-        $form['user[username]'] = 'testUserEdited';
-        $form['user[password][first]'] = 'test';
-        $form['user[password][second]'] = 'test';
-        $form['user[email]'] = 'test@email.com';
-
-        $this->client->submit($form);
-
+        $this->client->request('GET', 'tasks/1/toggle');
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
-    }*/
+
+    }
 
     public function tearDown()
     {
