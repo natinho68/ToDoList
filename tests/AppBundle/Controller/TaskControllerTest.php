@@ -78,15 +78,22 @@ class TaskControllerTest extends WebTestCase
 
     public function test_AddTask()
     {
-        $createATaskUser = new User();
+       /* $createATaskUser = new User();
         $createATaskUser->setUsername('createATaskUser');
         $createATaskUser->setPassword('createATaskUser');
         $createATaskUser->setRoles(array('ROLES_USER'));
         $createATaskUser->setEmail('createATaskUser@test.com');
 
-        $createdTask = new Task();
+        $this->em->persist($createATaskUser);
 
+        $createATask = new Task();
+        $createATask->setTitle('createTask');
+        $createATask->setContent('createTaskContent');
+        $createATask->setAuthor($createATaskUser);
+
+        $this->em->persist($createATask);
         $this->em->flush();
+       */
 
         $this->logIn();
         $crawler = $this->client->request('GET', '/tasks/create');
@@ -94,41 +101,72 @@ class TaskControllerTest extends WebTestCase
 
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['task[title]'] = 'createATask';
-        $form['task[content]'] = 'createATaskContent';
+        $form['task[title]'] = 'createTaskTitle';
+        $form['task[content]'] = 'createTaskContent';
 
-        var_dump($this->security);
-        die();
+        // need to inject an user !
+
         $this->client->submit($form);
 
+        /*$crawler = $this->client->followRedirect();
+
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());*/
 
     }
 
     public function test_toggleTaskAction()
     {
-        $this->logIn();
-
         $testTaskUser = new User();
         $testTaskUser->setUsername('testTaskUser');
         $testTaskUser->setPassword('testTaskUser');
         $testTaskUser->setRoles(array('ROLES_USER'));
         $testTaskUser->setEmail('testTaskUser@test.com');
-
         $this->em->persist($testTaskUser);
 
         $taskTest = new Task();
         $taskTest->setTitle('TaskTest');
         $taskTest->setContent('Create a task test');
         $taskTest->setAuthor($testTaskUser);
-
         $this->em->persist($taskTest);
 
         $this->em->flush();
 
+        $this->logIn();
         $this->client->request('GET', 'tasks/1/toggle');
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+    }
+
+    public function test_editAction()
+    {
+        
+    }
+
+
+
+    public function test_deleteAction()
+    {
+        $createUserTestDeleteTask = new User();
+        $createUserTestDeleteTask->setUsername('createATaskUser');
+        $createUserTestDeleteTask->setPassword('createATaskUser');
+        $createUserTestDeleteTask->setRoles(array('ROLES_USER'));
+        $createUserTestDeleteTask->setEmail('createATaskUser@test.com');
+        $this->em->persist($createUserTestDeleteTask);
+
+        $createATaskDeleteTest = new Task();
+        $createATaskDeleteTest->setTitle('createTask');
+        $createATaskDeleteTest->setContent('createTaskContent');
+        $createATaskDeleteTest->setAuthor($createUserTestDeleteTask);
+        $this->em->persist($createATaskDeleteTest);
+
+        $this->em->flush();
+
+        $this->logIn();
+        $this->client->request('GET', 'tasks/1/delete');
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+
     }
 
     public function tearDown()
