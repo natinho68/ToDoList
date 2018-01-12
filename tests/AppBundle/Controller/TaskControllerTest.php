@@ -107,9 +107,6 @@ class TaskControllerTest extends WebTestCase
     public function test_toggleTaskAction()
     {
         $this->logIn();
-        $crawler = $this->client->request('GET', '/tasks');
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSame(1, $crawler->selectLink('Créer un utilisateur')->count());
 
         $testTaskUser = new User();
         $testTaskUser->setUsername('testTaskUser');
@@ -118,7 +115,6 @@ class TaskControllerTest extends WebTestCase
         $testTaskUser->setEmail('testTaskUser@test.com');
 
         $this->em->persist($testTaskUser);
-        $this->em->flush();
 
         $taskTest = new Task();
         $taskTest->setTitle('TaskTest');
@@ -126,14 +122,13 @@ class TaskControllerTest extends WebTestCase
         $taskTest->setAuthor($testTaskUser);
 
         $this->em->persist($taskTest);
+
         $this->em->flush();
 
         $this->client->request('GET', 'tasks/1/toggle');
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
-
-
     }
 
     public function tearDown()
