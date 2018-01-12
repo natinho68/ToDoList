@@ -1,6 +1,5 @@
 <?php
 
-// tests/AppBundle/Controller/DefaultControllerTest.php
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Entity\Task;
@@ -71,7 +70,7 @@ class TaskControllerTest extends WebTestCase
     public function test_listAction()
     {
         $this->logIn();
-        $crawler = $this->client->request('GET', '/tasks');
+        $this->client->request('GET', '/tasks');
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
@@ -84,7 +83,7 @@ class TaskControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/tasks/create');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $user = $this->security->getToken()->getUser();
+        $this->security->getToken()->getUser();
 
 
         $form = $crawler->selectButton('Ajouter')->form();
@@ -96,7 +95,7 @@ class TaskControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
 
-        echo $this->client->getResponse()->getContent();
+        //echo $this->client->getResponse()->getContent();
 
 
     }
