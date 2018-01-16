@@ -59,12 +59,23 @@ class TaskControllerTest extends WebTestCase
         // the firewall context defaults to the firewall name
         $firewallContext = 'main';
 
-        $token = new UsernamePasswordToken('admin', null, $firewallContext, array('ROLE_ADMIN'));
+        $testTaskUser = new User();
+        $testTaskUser->setUsername('UserForLogin');
+        $testTaskUser->setPassword('createUser');
+        $testTaskUser->setRoles(array('ROLES_ADMIN'));
+        $testTaskUser->setEmail('createUser@test.com');
+
+        $this->em->persist($testTaskUser);
+        $this->em->flush();
+
+        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
+
+
     }
 
     public function test_listAction()
@@ -78,22 +89,6 @@ class TaskControllerTest extends WebTestCase
 
     public function test_AddTask()
     {
-       /* $createATaskUser = new User();
-        $createATaskUser->setUsername('createATaskUser');
-        $createATaskUser->setPassword('createATaskUser');
-        $createATaskUser->setRoles(array('ROLES_USER'));
-        $createATaskUser->setEmail('createATaskUser@test.com');
-
-        $this->em->persist($createATaskUser);
-
-        $createATask = new Task();
-        $createATask->setTitle('createTask');
-        $createATask->setContent('createTaskContent');
-        $createATask->setAuthor($createATaskUser);
-
-        $this->em->persist($createATask);
-        $this->em->flush();
-       */
 
         $this->logIn();
         $crawler = $this->client->request('GET', '/tasks/create');
@@ -104,35 +99,35 @@ class TaskControllerTest extends WebTestCase
         $form['task[title]'] = 'createTaskTitle';
         $form['task[content]'] = 'createTaskContent';
 
-        // need to inject an user !
-
         $this->client->submit($form);
 
-        /*$crawler = $this->client->followRedirect();
+        $crawler = $this->client->followRedirect();
 
-        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());*/
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
     }
 
     public function test_toggleTaskAction()
     {
-        $testTaskUser = new User();
-        $testTaskUser->setUsername('testTaskUser');
-        $testTaskUser->setPassword('testTaskUser');
-        $testTaskUser->setRoles(array('ROLES_USER'));
-        $testTaskUser->setEmail('testTaskUser@test.com');
-        $this->em->persist($testTaskUser);
+        $this->logIn();
+
+        // need a request to persist the user from login action
+        $this->client->request('GET', '/');
+        $user = $this->security->getToken()->getUser();
 
         $taskTest = new Task();
         $taskTest->setTitle('TaskTest');
         $taskTest->setContent('Create a task test');
-        $taskTest->setAuthor($testTaskUser);
+        $taskTest->setAuthor($user);
         $this->em->persist($taskTest);
 
         $this->em->flush();
 
-        $this->logIn();
-        $this->client->request('GET', 'tasks/1/toggle');
+        $getTaskTest = $this->em->getRepository(Task::class)->find(1);
+        $getId = $getTaskTest->getId();
+
+
+        $this->client->request('GET', 'tasks/'. $getId .'/toggle');
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
@@ -140,30 +135,62 @@ class TaskControllerTest extends WebTestCase
 
     public function test_editAction()
     {
-        
-    }
+        $this->logIn();
 
+        // need a request to persist the user from login action
+        $this->client->request('GET', '/');
+        $user = $this->security->getToken()->getUser();
+
+        $taskTest = new Task();
+        $taskTest->setTitle('TaskTest');
+        $taskTest->setContent('Create a task test');
+        $taskTest->setAuthor($user);
+        $this->em->persist($taskTest);
+
+        $this->em->flush();
+
+        $getTaskTest = $this->em->getRepository(Task::class)->find(1);
+        $getId = $getTaskTest->getId();
+
+
+        $crawler = $this->client->request('GET', 'tasks/'. $getId .'/edit');
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form['task[title]'] = 'TaskTitleEdited';
+        $form['task[content]'] = 'TaskContentEdited';
+
+        $this->client->submit($form);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+
+    }
 
 
     public function test_deleteAction()
     {
-        $createUserTestDeleteTask = new User();
-        $createUserTestDeleteTask->setUsername('createATaskUser');
-        $createUserTestDeleteTask->setPassword('createATaskUser');
-        $createUserTestDeleteTask->setRoles(array('ROLES_USER'));
-        $createUserTestDeleteTask->setEmail('createATaskUser@test.com');
-        $this->em->persist($createUserTestDeleteTask);
 
-        $createATaskDeleteTest = new Task();
-        $createATaskDeleteTest->setTitle('createTask');
-        $createATaskDeleteTest->setContent('createTaskContent');
-        $createATaskDeleteTest->setAuthor($createUserTestDeleteTask);
-        $this->em->persist($createATaskDeleteTest);
+        $this->logIn();
+
+        // need a request to persist the user from login action
+        $this->client->request('GET', '/');
+        $user = $this->security->getToken()->getUser();
+
+        $TaskForDelete = new Task();
+        $TaskForDelete->setTitle('TaskForDelete');
+        $TaskForDelete->setContent('TaskContent');
+        $TaskForDelete->setAuthor($user);
+        $this->em->persist($TaskForDelete);
 
         $this->em->flush();
 
-        $this->logIn();
-        $this->client->request('GET', 'tasks/1/delete');
+        $getTaskForDelete = $this->em->getRepository(Task::class)->find(1);
+        $getId = $getTaskForDelete->getId();
+
+
+        $this->client->request('GET', 'tasks/'. $getId .'/delete');
+
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
