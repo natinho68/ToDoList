@@ -55,12 +55,25 @@ class UserControllerTest extends WebTestCase
         // the firewall context defaults to the firewall name
         $firewallContext = 'main';
 
-        $token = new UsernamePasswordToken('admin', null, $firewallContext, array('ROLE_ADMIN'));
+        $testTaskUser = new User();
+        $testTaskUser->setUsername('UserForLogin');
+        $testTaskUser->setPassword('createUser');
+        $testTaskUser->setRoles(array('ROLE_ADMIN'));
+        $testTaskUser->setEmail('createUser@test.com');
+
+        $this->em->persist($testTaskUser);
+        $this->em->flush();
+
+        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
+
+        $this->client->request('GET', '/');
+
+
     }
 
     public function test_listAction()
@@ -94,24 +107,17 @@ class UserControllerTest extends WebTestCase
 
     public function test_EditUser()
     {
-
-        $editUser = new User();
-        $editUser->setUsername('editUser');
-        $editUser->setPassword('editUser');
-        $editUser->setRoles(array('ROLES_USER'));
-        $editUser->setEmail('editUser@test.com');
-
-        $this->em->persist($editUser);
-        $this->em->flush();
-
         $this->logIn();
-        $crawler = $this->client->request('GET', 'users/1/edit');
+
+        $getUserTest = $this->em->getRepository(User::class)->find(1);
+        $getId = $getUserTest->getId();
+
+        $crawler = $this->client->request('GET', 'users/'. $getId .'/edit');
 
         $form = $crawler->selectButton('Modifier')->form();
 
-
         $form['user[roles]'] = 'ROLE_USER';
-        $form['user[username]'] = 'testUserEdited';
+        $form['user[username]'] = 'UserEdited';
         $form['user[password][first]'] = 'test';
         $form['user[password][second]'] = 'test';
         $form['user[email]'] = 'test@email.com';

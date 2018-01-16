@@ -62,7 +62,7 @@ class TaskControllerTest extends WebTestCase
         $testTaskUser = new User();
         $testTaskUser->setUsername('UserForLogin');
         $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLES_ADMIN'));
+        $testTaskUser->setRoles(array('ROLE_ADMIN'));
         $testTaskUser->setEmail('createUser@test.com');
 
         $this->em->persist($testTaskUser);
