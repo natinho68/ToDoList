@@ -75,6 +75,8 @@ class TaskControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
 
+        $this->client->request('GET', '/');
+
 
     }
 
@@ -110,9 +112,6 @@ class TaskControllerTest extends WebTestCase
     public function test_toggleTaskAction()
     {
         $this->logIn();
-
-        // need a request to persist the user from login action
-        $this->client->request('GET', '/');
         $user = $this->security->getToken()->getUser();
 
         $taskTest = new Task();
@@ -136,9 +135,6 @@ class TaskControllerTest extends WebTestCase
     public function test_editAction()
     {
         $this->logIn();
-
-        // need a request to persist the user from login action
-        $this->client->request('GET', '/');
         $user = $this->security->getToken()->getUser();
 
         $taskTest = new Task();
@@ -172,9 +168,6 @@ class TaskControllerTest extends WebTestCase
     {
 
         $this->logIn();
-
-        // need a request to persist the user from login action
-        $this->client->request('GET', '/');
         $user = $this->security->getToken()->getUser();
 
         $TaskForDelete = new Task();
