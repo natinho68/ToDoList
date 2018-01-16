@@ -103,9 +103,20 @@ class TaskControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
+
+        $getTask = $this->em->getRepository(Task::class)->find(1);
+        $title = $getTask->getTitle();
+        $content = $getTask->getContent();
+
+        $this->assertEquals('createTaskTitle', $title);
+        $this->assertEquals('createTaskContent', $content);
+
+
         $crawler = $this->client->followRedirect();
 
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->assertGreaterThan(0, $crawler->filter('div:contains("a été bien été ajoutée.")')->count());
 
     }
 
@@ -127,9 +138,12 @@ class TaskControllerTest extends WebTestCase
 
 
         $this->client->request('GET', 'tasks/'. $getId .'/toggle');
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->assertGreaterThan(0, $crawler->filter('div:contains("a bien été marquée comme faite.")')->count());
     }
 
     public function test_editAction()
@@ -150,6 +164,7 @@ class TaskControllerTest extends WebTestCase
 
 
         $crawler = $this->client->request('GET', 'tasks/'. $getId .'/edit');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Modifier')->form();
         $form['task[title]'] = 'TaskTitleEdited';
@@ -160,6 +175,7 @@ class TaskControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->assertGreaterThan(0, $crawler->filter('div:contains("a bien été modifiée.")')->count());
 
     }
 
@@ -183,9 +199,12 @@ class TaskControllerTest extends WebTestCase
 
 
         $this->client->request('GET', 'tasks/'. $getId .'/delete');
-
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
+
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->assertGreaterThan(0, $crawler->filter('div:contains("a bien été supprimée.")')->count());
 
     }
 
