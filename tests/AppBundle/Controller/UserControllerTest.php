@@ -76,6 +76,98 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    public function test_AddUserEmptyRole()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'testUser';
+        $form['user[password][first]'] = 'test';
+        $form['user[password][second]'] = 'test';
+        $form['user[email]'] = 'test@email.com';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains(" Vous devez choisir un rôle")')->count());
+
+    }
+
+    public function test_AddUserEmptyEmail()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'testUser';
+        $form['user[password][first]'] = 'test';
+        $form['user[password][second]'] = 'test';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("Vous devez saisir une adresse email.")')->count());
+
+    }
+
+    public function test_AddUserNotValidEmail()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'testUser';
+        $form['user[password][first]'] = 'test';
+        $form['user[password][second]'] = 'test';
+        $form['user[email]'] = 'testemailcom';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("Le format de l\'adresse n\'est pas correcte.")')->count());
+    }
+
+    public function test_AddUserNotSamePasswords()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'testUser';
+        $form['user[password][first]'] = 'test';
+        $form['user[password][second]'] = 'test2';
+        $form['user[email]'] = 'test@email.com';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("This value is not valid.")')->count());
+    }
+
+
+    public function test_AddUserEmptyPassword()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[roles]'] = 'ROLE_USER';
+        $form['user[username]'] = 'testUser';
+        $form['user[email]'] = 'test@email.com';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("Vous devez saisir un mot de passe.")')->count());
+
+    }
+
     public function test_listAction()
     {
         $this->logIn();
@@ -129,6 +221,8 @@ class UserControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
     }
+
+
 
     public function tearDown()
     {
