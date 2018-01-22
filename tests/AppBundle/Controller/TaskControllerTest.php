@@ -130,21 +130,45 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
 
 
-        $getTask = $this->em->getRepository(Task::class)->find(1);
-        $title = $getTask->getTitle();
-        $content = $getTask->getContent();
-
-
-
-        $this->assertEquals('createTaskTitle', $title);
-        $this->assertEquals('createTaskContent', $content);
-
-
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
         $this->assertGreaterThan(0, $crawler->filter('div:contains("a été bien été ajoutée.")')->count());
+
+    }
+
+    public function test_AddTaskEmptyContent()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/tasks/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['task[title]'] = 'createTaskTitle';
+        $form['task[content]'] = '';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("Vous devez saisir du contenu.")')->count());
+
+    }
+
+    public function test_AddTaskEmptyTitle()
+    {
+
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/tasks/create');
+
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['task[title]'] = '';
+        $form['task[content]'] = 'Content';
+
+        $crawler = $this->client->submit($form);
+
+        $this->assertSame(1, $crawler->filter('html:contains("Vous devez saisir un titre.")')->count());
 
     }
 
