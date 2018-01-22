@@ -97,7 +97,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('div.alert.alert-danger:contains("Invalid credentials")')->count());
     }
 
-    public function logIn()
+    private function logIn()
     {
         $session = $this->client->getContainer()->get('session');
 

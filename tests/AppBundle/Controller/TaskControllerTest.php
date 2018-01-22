@@ -79,6 +79,33 @@ class TaskControllerTest extends WebTestCase
 
     }
 
+    private function logInUser()
+    {
+        $session = $this->client->getContainer()->get('session');
+
+        // the firewall context defaults to the firewall name
+        $firewallContext = 'main';
+
+        $testTaskUser = new User();
+        $testTaskUser->setUsername('UserRole');
+        $testTaskUser->setPassword('createUser');
+        $testTaskUser->setRoles(array('ROLE_USER'));
+        $testTaskUser->setEmail('UserRole@test.com');
+
+        $this->em->persist($testTaskUser);
+        $this->em->flush();
+
+        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
+        $session->set('_security_'.$firewallContext, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
+
+        $this->client->request('GET', '/');
+
+    }
+
     public function test_listAction()
     {
         $this->logIn();
@@ -145,6 +172,35 @@ class TaskControllerTest extends WebTestCase
 
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
         $this->assertGreaterThan(0, $crawler->filter('div:contains("a bien été marquée comme faite.")')->count());
+    }
+
+    public function test_deleteTaskNotTheAuthor()
+    {
+        $this->logInUser();
+        $userAuthor = new User();
+        $userAuthor->setUsername('UserAuthor');
+        $userAuthor->setPassword('UserAuthor');
+        $userAuthor->setRoles(array('ROLE_USER'));
+        $userAuthor->setEmail('UserAuthor@test.com');
+        $this->em->persist($userAuthor);
+
+
+        $taskToDelete = new Task();
+        $taskToDelete->setTitle('TaskToDelete');
+        $taskToDelete->setContent('delete this task');
+        $taskToDelete->setAuthor($userAuthor);
+        $this->em->persist($taskToDelete);
+
+        $this->em->flush();
+
+        $getTaskToDelete = $this->em->getRepository(Task::class)->findOneBy(array('title' => 'TaskToDelete'))->getId();
+
+        $this->client->request('GET', 'tasks/'. $getTaskToDelete .'/delete');
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertSame(1, $crawler->filter('div.alert.alert-danger:contains("Vous ne pouvez pas supprimer la tâche")')->count());
+
     }
 
     public function test_editAction()
