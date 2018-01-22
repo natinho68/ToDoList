@@ -98,9 +98,8 @@ class DefaultControllerTest extends WebTestCase
 
     public function getAdminUrls()
     {
-        yield ['/users/1/edit'];
         yield ['/users/create'];
-        yield ['/users'];
+        yield ['/users/create'];
     }
 
     public function tearDown()
