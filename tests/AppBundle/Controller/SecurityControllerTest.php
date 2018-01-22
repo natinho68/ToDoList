@@ -5,7 +5,9 @@ namespace Tests\AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\User;
+use Symfony\Component\BrowserKit\Cookie;
 use Doctrine\ORM\Tools\SchemaTool;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 
 class SecurityControllerTest extends WebTestCase
@@ -74,6 +76,67 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('html:contains("Bienvenue sur Todo List")')->count());
+
+    }
+
+    public function test_badCredentials()
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('form.login_form')->count());
+
+
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username'] = 'bad';
+        $form['_password'] = 'credentials';
+
+        $this->client->submit($form);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertSame(1, $crawler->filter('div.alert.alert-danger:contains("Invalid credentials")')->count());
+    }
+
+    public function logIn()
+    {
+        $session = $this->client->getContainer()->get('session');
+
+        // the firewall context defaults to the firewall name
+        $firewallContext = 'main';
+
+        $testTaskUser = new User();
+        $testTaskUser->setUsername('UserForLogin');
+        $testTaskUser->setPassword('createUser');
+        $testTaskUser->setRoles(array('ROLE_ADMIN'));
+        $testTaskUser->setEmail('createUser@test.com');
+
+        $this->em->persist($testTaskUser);
+        $this->em->flush();
+
+        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
+        $session->set('_security_'.$firewallContext, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
+
+        $this->client->request('GET', '/');
+
+
+    }
+
+    public function test_logoutCheck()
+    {
+        $this->logIn();
+        $this->client->request('GET', '/logout');
+
+        $this->client->followRedirect();
+        $response = $this->client->getResponse();
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+        $this->assertSame(
+            'http://localhost/login',
+            $response->getTargetUrl()
+        );
 
     }
 

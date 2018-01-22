@@ -77,7 +77,6 @@ class TaskControllerTest extends WebTestCase
 
         $this->client->request('GET', '/');
 
-
     }
 
     public function test_listAction()
