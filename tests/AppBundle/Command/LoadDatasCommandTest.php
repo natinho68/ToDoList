@@ -1,11 +1,15 @@
 <?php
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+
+namespace Tests\AppBundle\Command;
+
 use AppBundle\Command\LoadDatasCommand;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 use Doctrine\ORM\Tools\SchemaTool;
 
-class LoadDatasCommandTest extends WebTestCase
+class CreateUserCommandTest extends WebTestCase
+
 {
 
     private $client = null;
@@ -14,12 +18,8 @@ class LoadDatasCommandTest extends WebTestCase
 
     private $container;
 
-    protected function setUp()
+    public function setUp()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
-
-
         $this->client = static::createClient();
 
         $this->container = $this->client->getContainer();
@@ -44,22 +44,25 @@ class LoadDatasCommandTest extends WebTestCase
         {
             $schemaTool->createSchema($metadatas);
         }
+
     }
 
-    public function test_LoadDatasCommand()
+    public function test_loadExecute()
     {
-        $application = new Application(static::$kernel);
+        $kernel = static::createKernel();
+        $kernel->boot();
+
+        $application = new Application($kernel);
         $application->add(new LoadDatasCommand());
 
         $command = $application->find('app:load-datas');
-        $command->setApplication($application);
         $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                'command'      => $command->getName(),
-            ));
+        $commandTester->execute(array(
+            'command'  => $command->getName()));
 
-        $this->assertRegExp('/Datas successfully loaded/', $commandTester->getDisplay());
+        $output = $commandTester->getDisplay();
+        $this->assertContains('Datas successfully loaded!', $output);
+
     }
 
     public function tearDown()
