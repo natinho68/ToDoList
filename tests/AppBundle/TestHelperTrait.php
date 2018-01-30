@@ -6,6 +6,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\BrowserKit\Cookie;
 use Doctrine\ORM\Tools\SchemaTool;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Task;
 
 trait TestHelperTrait{
 
@@ -164,5 +165,19 @@ trait TestHelperTrait{
         $this->client->request('GET', '/');
 
     }
+
+    private function createTask()
+    {
+        $user = $this->security->getToken()->getUser();
+        $taskTest = new Task();
+        $taskTest->setTitle('TaskTest');
+        $taskTest->setContent('Create a task test');
+        $taskTest->setAuthor($user);
+        $this->em->persist($taskTest);
+
+        $this->em->flush();
+    }
+
+
 
 }

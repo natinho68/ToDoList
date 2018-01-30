@@ -93,15 +93,7 @@ class TaskControllerTest extends WebTestCase
     public function test_toggleTaskAction()
     {
         $this->logInUserObject();
-        $user = $this->security->getToken()->getUser();
-
-        $taskTest = new Task();
-        $taskTest->setTitle('TaskTest');
-        $taskTest->setContent('Create a task test');
-        $taskTest->setAuthor($user);
-        $this->em->persist($taskTest);
-
-        $this->em->flush();
+        $this->createTask();
 
         $getTaskTest = $this->em->getRepository(Task::class)->find(1);
         $getId = $getTaskTest->getId();
