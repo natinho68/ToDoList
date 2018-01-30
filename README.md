@@ -9,7 +9,7 @@ Improve an existing Symfony project
 * Create the technical documentation
 * Create a quality audit of the code & performance of the application
 
-https://openclassrooms.com/projects/ameliorer-un-projet-existant-1
+[More details of the project](https://openclassrooms.com/projects/ameliorer-un-projet-existant-1)
 
 ## Getting Started
 
@@ -41,6 +41,24 @@ parameters:
 * Install the database structure and datas with ``` php bin/console app:load-datas ```
 * Enjoy
 
+
+## Testing
+
+* Install the test database with ``` php bin/console doctrine:database:create --env=test ```
+* Run the automatic tests with ``` vendor/bin/phpunit ```
+* If you want to see the HTML code coverage go in **web/test-coverage**
+
+
+## How to contribute
+
+1. Clone the project on github, on master branch
+2. Create a branch and make your contributions 
+3. Write your tests and **make sure they pass !**
+4. Create a pull request
+5. After checking, the pull request will be merged on the project
+
+
+
 ## Built With
 
 * [Composer](https://getcomposer.org/) - Used for dependency manager
@@ -48,6 +66,7 @@ parameters:
 * [Twig](https://twig.sensiolabs.org/) - Used for template engine
 * [Bootstrap](https://getbootstrap.com/) - Used for design and responsive
 * [PHPUnit](https://phpunit.de/) - Used for unit and functional tests
+* [Blackfire](https://blackfire.io/) - Used as code performance tool
 
 ## Authors
 
