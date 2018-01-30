@@ -1,6 +1,10 @@
 imports:
     - { resource: config_dev.yml }
 
+
+parameters:
+    database_name: todolist_test
+
 framework:
     test: ~
     session:
@@ -14,3 +18,10 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+
+## add this to simulate authentication for tests
+security:
+    firewalls:
+        main:
+            http_basic: ~
