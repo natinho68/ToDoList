@@ -9,106 +9,24 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Tests\AppBundle\TestHelperTrait;
 
 class TaskControllerTest extends WebTestCase
 {
-    private $client = null;
 
-    private $em = null;
-
-    private $container;
-
-    private $security;
+    use TestHelperTrait;
 
     public function setUp()
     {
-        $this->client = static::createClient();
 
-        $this->container = $this->client->getContainer();
-
-        $this->em = $this->container->get('doctrine')->getManager();
-
-        $this->security = $this->container->get('security.token_storage');
-
-
-        // to not to load the metadata every time
-        static $metadatas;
-
-
-        if(!isset($metadatas))
-        {
-            $metadatas = $this->em->getMetadataFactory()->getAllMetadata();
-        }
-
-        $schemaTool = new SchemaTool($this->em);
-        $schemaTool->dropDatabase();
-
-
-        if(!empty($metadatas))
-        {
-            $schemaTool->createSchema($metadatas);
-        }
-
+    $this->setUpWithSchemaAndSecurityToken();
 
     }
 
-    private function logIn()
-    {
-        $session = $this->client->getContainer()->get('session');
-
-        // the firewall context defaults to the firewall name
-        $firewallContext = 'main';
-
-        $testTaskUser = new User();
-        $testTaskUser->setUsername('UserForLogin');
-        $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLE_ADMIN'));
-        $testTaskUser->setEmail('createUser@test.com');
-
-        $this->em->persist($testTaskUser);
-        $this->em->flush();
-
-        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-
-        $this->client->request('GET', '/');
-
-    }
-
-    private function logInUser()
-    {
-        $session = $this->client->getContainer()->get('session');
-
-        // the firewall context defaults to the firewall name
-        $firewallContext = 'main';
-
-        $testTaskUser = new User();
-        $testTaskUser->setUsername('UserRole');
-        $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLE_USER'));
-        $testTaskUser->setEmail('UserRole@test.com');
-
-        $this->em->persist($testTaskUser);
-        $this->em->flush();
-
-        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-
-        $this->client->request('GET', '/');
-
-    }
 
     public function test_listAction()
     {
-        $this->logIn();
+        $this->logInUser();
         $this->client->request('GET', '/tasks');
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -118,7 +36,7 @@ class TaskControllerTest extends WebTestCase
     public function test_AddTask()
     {
 
-        $this->logIn();
+        $this->logInUserObject();
         $crawler = $this->client->request('GET', '/tasks/create');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
@@ -141,7 +59,7 @@ class TaskControllerTest extends WebTestCase
     public function test_AddTaskEmptyContent()
     {
 
-        $this->logIn();
+        $this->logInUserObject();
         $crawler = $this->client->request('GET', '/tasks/create');
 
 
@@ -158,7 +76,7 @@ class TaskControllerTest extends WebTestCase
     public function test_AddTaskEmptyTitle()
     {
 
-        $this->logIn();
+        $this->logInUserObject();
         $crawler = $this->client->request('GET', '/tasks/create');
 
 
@@ -174,7 +92,7 @@ class TaskControllerTest extends WebTestCase
 
     public function test_toggleTaskAction()
     {
-        $this->logIn();
+        $this->logInUserObject();
         $user = $this->security->getToken()->getUser();
 
         $taskTest = new Task();
@@ -200,7 +118,7 @@ class TaskControllerTest extends WebTestCase
 
     public function test_deleteTaskNotTheAuthor()
     {
-        $this->logInUser();
+        $this->logInUserObject();
         $userAuthor = new User();
         $userAuthor->setUsername('UserAuthor');
         $userAuthor->setPassword('UserAuthor');
@@ -229,7 +147,7 @@ class TaskControllerTest extends WebTestCase
 
     public function test_editAction()
     {
-        $this->logIn();
+        $this->logInUserObject();
         $user = $this->security->getToken()->getUser();
 
         $taskTest = new Task();
@@ -264,7 +182,7 @@ class TaskControllerTest extends WebTestCase
     public function test_deleteAction()
     {
 
-        $this->logIn();
+        $this->logInAdminObject();
         $user = $this->security->getToken()->getUser();
 
         $TaskForDelete = new Task();

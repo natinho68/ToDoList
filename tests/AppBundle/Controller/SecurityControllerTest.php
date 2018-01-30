@@ -6,45 +6,18 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\User;
 use Symfony\Component\BrowserKit\Cookie;
-use Doctrine\ORM\Tools\SchemaTool;
+
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Tests\AppBundle\TestHelperTrait;
 
 
 class SecurityControllerTest extends WebTestCase
 {
-    private $client = null;
-
-    private $em = null;
-
-    private $container;
+    use TestHelperTrait;
 
     public function setUp()
     {
-        $this->client = static::createClient();
-
-        $this->container = $this->client->getContainer();
-
-        $this->em = $this->container->get('doctrine')->getManager();
-
-
-        // to not to load the metadata every time
-        static $metadatas;
-
-
-        if(!isset($metadatas))
-        {
-            $metadatas = $this->em->getMetadataFactory()->getAllMetadata();
-        }
-
-        $schemaTool = new SchemaTool($this->em);
-        $schemaTool->dropDatabase();
-
-
-        if(!empty($metadatas))
-        {
-            $schemaTool->createSchema($metadatas);
-        }
-
+        $this->setUpWithSchema();
     }
 
     public function test_loginAction()
@@ -97,37 +70,10 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('div.alert.alert-danger:contains("Invalid credentials")')->count());
     }
 
-    private function logIn()
-    {
-        $session = $this->client->getContainer()->get('session');
-
-        // the firewall context defaults to the firewall name
-        $firewallContext = 'main';
-
-        $testTaskUser = new User();
-        $testTaskUser->setUsername('UserForLogin');
-        $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLE_ADMIN'));
-        $testTaskUser->setEmail('createUser@test.com');
-
-        $this->em->persist($testTaskUser);
-        $this->em->flush();
-
-        $token = new UsernamePasswordToken($testTaskUser, null, $firewallContext, $testTaskUser->getRoles());
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-
-        $this->client->request('GET', '/');
-
-
-    }
 
     public function test_logoutCheck()
     {
-        $this->logIn();
+        $this->logInAdmin();
         $this->client->request('GET', '/logout');
 
         $this->client->followRedirect();

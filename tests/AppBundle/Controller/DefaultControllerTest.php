@@ -4,37 +4,21 @@
 namespace Tests\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Tests\AppBundle\TestHelperTrait;
 
 class DefaultControllerTest extends WebTestCase
 {
-    private $client = null;
+    use TestHelperTrait;
 
     public function setUp()
     {
-        $this->client = static::createClient();
-    }
-
-    private function logIn()
-    {
-        $session = $this->client->getContainer()->get('session');
-
-        // the firewall context defaults to the firewall name
-        $firewallContext = 'main';
-
-        $token = new UsernamePasswordToken('admin', null, $firewallContext, array('ROLE_ADMIN'));
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
+        $this->createAClient();
     }
 
     public function test_indexAction()
     {
-        $this->logIn();
+        $this->loginUser();
         $crawler = $this->client->request('GET', '/');
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -64,18 +48,7 @@ class DefaultControllerTest extends WebTestCase
      */
     public function test_NotAllowedRoles($url)
     {
-        $session = $this->client->getContainer()->get('session');
-
-        // the firewall context defaults to the firewall name
-        $firewallContext = 'main';
-
-        $token = new UsernamePasswordToken('admin', null, $firewallContext, array('ROLE_USER'));
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-
+        $this->loginUser();
 
         $this->client->request('GET', $url);
         $this->assertSame(
