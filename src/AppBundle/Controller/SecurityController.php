@@ -5,11 +5,13 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
+     * @Method("GET")
      */
     public function loginAction(Request $request)
     {
@@ -18,14 +20,18 @@ class SecurityController extends Controller
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', array(
+        $response = $this->render('security/login.html.twig', array(
             'last_username' => $lastUsername,
             'error'         => $error,
         ));
+        $response->setSharedMaxAge(15);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        return $response;
     }
 
     /**
      * @Route("/login_check", name="login_check")
+     * @Method("POST")
      */
     public function loginCheck()
     {
@@ -34,6 +40,7 @@ class SecurityController extends Controller
 
     /**
      * @Route("/logout", name="logout")
+     * @Method("GET")
      */
     public function logoutCheck()
     {
