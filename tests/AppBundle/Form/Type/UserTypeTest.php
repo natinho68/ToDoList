@@ -2,9 +2,9 @@
 // tests/Form/Type/TestedTypeTest.php
 namespace App\Tests\Form;
 
-use AppBundle\Form\TaskType;
+use AppBundle\Form\Type\TaskType;
 use AppBundle\Entity\User;
-use AppBundle\Form\UserType;
+use AppBundle\Form\Type\UserType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class UserTypeTest extends TypeTestCase
