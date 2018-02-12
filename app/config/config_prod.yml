@@ -24,3 +24,4 @@ doctrine:
         auto_generate_proxy_classes:  true
         proxy_dir:            '%kernel.cache_dir%/doctrine/orm/Proxies'
         proxy_namespace:      Proxies
+        
