@@ -83,7 +83,7 @@ class UserController extends Controller
         $response = $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
         $response->setSharedMaxAge(3600);
         $response->headers->addCacheControlDirective('must-revalidate', true);
-        
+
         return $response;
     }
 }
