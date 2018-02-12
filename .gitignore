@@ -2,6 +2,7 @@
 /phpunit.xml
 /var/*
 !/var/cache
+/app/config/parameters.yml
 /var/cache/*
 !var/cache/.gitkeep
 !/var/logs
