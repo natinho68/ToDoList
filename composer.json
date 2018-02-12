@@ -1,4 +1,5 @@
 {
+    "description": "Improve an existing Symfony project",
     "name": "saro0h/to-do-list",
     "license": "proprietary",
     "type": "project",
