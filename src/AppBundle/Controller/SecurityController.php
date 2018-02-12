@@ -11,7 +11,7 @@ class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
-     * @Method({"GET", "POST"})
+     * @Method("GET")
      */
     public function loginAction(Request $request)
     {
@@ -31,7 +31,7 @@ class SecurityController extends Controller
 
     /**
      * @Route("/login_check", name="login_check")
-     * @Method({"GET", "POST"})
+     * @Method("POST")
      */
     public function loginCheck()
     {
@@ -40,7 +40,7 @@ class SecurityController extends Controller
 
     /**
      * @Route("/logout", name="logout")
-     * @Method({"GET", "POST"})
+     * @Method("GET")
      */
     public function logoutCheck()
     {
