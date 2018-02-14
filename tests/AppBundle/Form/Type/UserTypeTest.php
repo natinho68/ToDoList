@@ -12,7 +12,7 @@ class UserTypeTest extends TypeTestCase
     public function test_SubmitValidDataUser()
     {
         $formData = array(
-            'roles' => ['ROLE_ADMIN'],
+            'role' => 'ROLE_ADMIN',
             'username' => 'jojo',
             'password' => array('first' => 'jojo', 'second' => 'jojo'),
             'email' => 'jojo@jojo.com'
@@ -21,7 +21,7 @@ class UserTypeTest extends TypeTestCase
         $form = $this->factory->create(UserType::class);
 
         $object = new User();
-        $object->setRoles(['ROLE_ADMIN']);
+        $object->setRole('ROLE_ADMIN');
         $object->setUsername('jojo');
         $object->setPassword('jojo');
         $object->setEmail('jojo@jojo.com');
@@ -32,7 +32,7 @@ class UserTypeTest extends TypeTestCase
         $form->submit($formData);
 
         $this->assertTrue($form->isSynchronized());
-        $this->assertEquals($object->getRoles(), $form->get('roles')->getData());
+        $this->assertEquals($object->getRole(), $form->get('role')->getData());
         $this->assertEquals($object->getUsername(), $form->get('username')->getData());
         $this->assertEquals($object->getPassword(), $form->get('password')->getData());
         $this->assertEquals($object->getEmail(), $form->get('email')->getData());

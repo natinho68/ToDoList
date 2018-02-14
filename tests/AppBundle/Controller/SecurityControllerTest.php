@@ -29,7 +29,7 @@ class SecurityControllerTest extends WebTestCase
         $password = $this->container->get('security.password_encoder')->encodePassword($userTestLogin, $plainPass);
         $userTestLogin->setPassword($password);
 
-        $userTestLogin->setRoles(array('ROLE_USER'));
+        $userTestLogin->setRole('ROLE_USER');
         $userTestLogin->setEmail('userTestLogin@test.com');
 
         $this->em->persist($userTestLogin);

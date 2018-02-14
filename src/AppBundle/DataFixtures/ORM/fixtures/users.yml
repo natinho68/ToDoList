@@ -3,16 +3,16 @@ User:
         username: anonyme
         password: anonyme
         email: anonyme@anonyme.com
-        role: [ROLE_USER]
+        role: ROLE_USER
 
     user2:
         username: nathan
         password: nathan
         email: nathan@nathan.com
-        role: [ROLE_ADMIN]
+        role: ROLE_ADMIN
 
     user3:
         username: roger
         password: roger
         email: roger@roger.com
-        role: [ROLE_USER]
+        role: ROLE_USER
