@@ -122,7 +122,7 @@ trait TestHelperTrait{
         $testTaskUser = new User();
         $testTaskUser->setUsername('UserForLogin');
         $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLE_ADMIN'));
+        $testTaskUser->setRole('ROLE_ADMIN');
         $testTaskUser->setEmail('createUser@test.com');
 
         $this->em->persist($testTaskUser);
@@ -149,7 +149,7 @@ trait TestHelperTrait{
         $testTaskUser = new User();
         $testTaskUser->setUsername('UserRole');
         $testTaskUser->setPassword('createUser');
-        $testTaskUser->setRoles(array('ROLE_USER'));
+        $testTaskUser->setRole('ROLE_USER');
         $testTaskUser->setEmail('UserRole@test.com');
 
         $this->em->persist($testTaskUser);

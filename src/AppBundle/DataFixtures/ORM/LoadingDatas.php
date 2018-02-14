@@ -41,7 +41,7 @@ class LoadingDatas {
             $password = $encoder->encodePassword($user, $columns['password']);
             $user->setPassword($password);
             $user->setEmail($columns['email']);
-            $user->setRoles($columns['role']);
+            $user->setRole($columns['role']);
             $this->em->persist($user);
         }
         $this->em->flush();

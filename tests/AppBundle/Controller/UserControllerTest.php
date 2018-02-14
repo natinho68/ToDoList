@@ -102,7 +102,7 @@ class UserControllerTest extends WebTestCase
 
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['user[roles]'] = 'ROLE_USER';
+        $form['user[role]'] = 'ROLE_USER';
         $form['user[username]'] = 'testUser';
         $form['user[email]'] = 'test@email.com';
 
@@ -128,7 +128,7 @@ class UserControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/users/create');
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['user[roles]'] = 'ROLE_USER';
+        $form['user[role]'] = 'ROLE_USER';
         $form['user[username]'] = 'testUser';
         $form['user[password][first]'] = 'test';
         $form['user[password][second]'] = 'test';
@@ -152,7 +152,7 @@ class UserControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Modifier')->form();
 
-        $form['user[roles]'] = 'ROLE_USER';
+        $form['user[role]'] = 'ROLE_USER';
         $form['user[username]'] = 'UserEdited';
         $form['user[password][first]'] = 'test';
         $form['user[password][second]'] = 'test';

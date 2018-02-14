@@ -20,7 +20,7 @@ class UserTest extends WebTestCase{
         $user = new User();
         $user->setUsername('UserAuthor');
         $user->setPassword('UserAuthor');
-        $user->setRoles(array('ROLE_USER'));
+        $user->setRole('ROLE_USER');
         $user->setEmail('UserAuthor@test.com');
         $this->em->persist($user);
         $this->em->flush();
