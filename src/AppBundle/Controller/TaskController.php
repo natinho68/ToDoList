@@ -117,6 +117,9 @@ class TaskController extends Controller
         {
 
             $this->addFlash('error', sprintf("Vous ne pouvez pas supprimer la tâche '%s' car vous n'en êtes pas l'auteur", $task->getTitle()));
+            if($response){
+                $response->expire();
+            }
             return $this->redirectToRoute('task_list');
 
         } else {
