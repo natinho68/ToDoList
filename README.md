@@ -52,10 +52,14 @@ parameters:
 ## How to contribute
 
 1. Clone the project on github, on master branch
-2. Create a branch and make your contributions 
+2. Create a branch and make your contributions
 3. Write your tests and **make sure they pass !**
 4. Create a pull request
-5. After checking, the pull request will be merged on the project
+5. Please, make sure to respect the standards of PHP, Symfony and its conventions :  
+[PHP Standards Recommendations](https://www.php-fig.org/psr/)  
+[Symfony Coding Standards](https://symfony.com/doc/3.4/contributing/code/standards.html)  
+[Symfony Conventions](https://symfony.com/doc/3.4/contributing/code/conventions.html)  
+6. After checking, the pull request will be merged on the project
 
 
 
