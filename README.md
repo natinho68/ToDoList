@@ -1,4 +1,4 @@
-ToDoList
+ToDoList [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea/mini.png)](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea)
 ========
 
 Improve an existing Symfony project

@@ -26,7 +26,9 @@ security:
                 check_path: login_check
                 always_use_default_target_path:  true
                 default_target_path:  /
-            logout: ~
+            logout:
+              path:   /logout
+              target: /logout_exp
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

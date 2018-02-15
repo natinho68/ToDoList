@@ -47,4 +47,17 @@ class SecurityController extends Controller
     {
         // This code is never executed.
     }
+
+    /**
+     * @Route("/logout_exp", name="logout_exp")
+     * @Method("GET")
+     */
+    public function logOutExpire(Response $response = NULL)
+    {
+        if ($response) {
+            $response->expire();
+        }
+
+        return $this->redirectToRoute('homepage');
+    }
 }
