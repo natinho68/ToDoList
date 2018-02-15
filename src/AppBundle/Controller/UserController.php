@@ -34,7 +34,7 @@ class UserController extends Controller
      * @Route("/users/create", name="user_create")
      * @Method({"GET", "POST"})
      */
-    public function createAction(Request $request)
+    public function createAction(Response $response = null, Request $request)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -49,7 +49,9 @@ class UserController extends Controller
             $em->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
-
+            if($response){
+                $response->expire();
+            }
             return $this->redirectToRoute('user_list');
         }
 
@@ -64,7 +66,7 @@ class UserController extends Controller
      * @Route("/users/{id}/edit", name="user_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(User $user, Request $request)
+    public function editAction(Response $response = null, User $user, Request $request)
     {
         $form = $this->createForm(UserType::class, $user);
 
@@ -77,7 +79,9 @@ class UserController extends Controller
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
-
+            if($response){
+                $response->expire();
+            }
             return $this->redirectToRoute('user_list');
         }
 
