@@ -1,4 +1,4 @@
-ToDoList [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea/mini.png)](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea) [![Build Status](https://scrutinizer-ci.com/g/natinho68/ToDoList/badges/build.png?b=master)](https://scrutinizer-ci.com/g/natinho68/ToDoList/build-status/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b350108ddda487ea2aafa0e46abaa4f)](https://www.codacy.com/app/natinho68/ToDoList?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=natinho68/ToDoList&amp;utm_campaign=Badge_Grade)
+ToDoList [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea/mini.png)](https://insight.sensiolabs.com/projects/8feade4b-1726-4966-a0ef-c0e3303920ea) [![Build Status](https://scrutinizer-ci.com/g/natinho68/ToDoList/badges/build.png?b=master)](https://scrutinizer-ci.com/g/natinho68/ToDoList/build-status/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b350108ddda487ea2aafa0e46abaa4f)](https://www.codacy.com/app/natinho68/ToDoList?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=natinho68/ToDoList&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/natinho68/ToDoList.svg?branch=master)](https://travis-ci.org/natinho68/ToDoList)
 ========
 
 Improve an existing Symfony project
@@ -70,6 +70,7 @@ parameters:
 * [SensioLabsInsight](https://insight.sensiolabs.com/) - Used as Symfony code quality tool
 * [Codacy](https://app.codacy.com/) - Used as PHP code quality tool
 * [Scrutinizer](https://scrutinizer-ci.com) - Used as PHP code quality tool
+* [Travis](https://travis-ci.org) - Used as Test and Deploy tool
 
 ## Authors
 
